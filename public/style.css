@@ -12,3 +12,16 @@ header {
   padding: 20px 0px 0px 0px;
   color: #222222;
 }
+
+.repos-container {
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  border: 1px solid grey;
+}
+
+.repos-item {
+  border: 1px solid #999;
+  margin: 0.5rem;
+  padding: 0.5rem;
+}
