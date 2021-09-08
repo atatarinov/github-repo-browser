@@ -1,9 +1,9 @@
-function App(): JSX.Element {
+export default function App() {
   return (
     <div>
-      <h2>App loaded</h2>
+      <header>
+        <h2>Welcome to Chegg GitHub Repo and Issues Browser</h2>
+      </header>
     </div>
   );
 }
-
-export default App;
