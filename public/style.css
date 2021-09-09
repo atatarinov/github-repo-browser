@@ -13,14 +13,39 @@ header {
   color: #222222;
 }
 
+.content-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.repos-summary {
+  display: flex;
+  flex-direction: row;
+}
+
 .repos-container {
   display: flex;
   flex-direction: column;
-  width: 80%;
+  width: 50%;
   border: 1px solid grey;
+  margin-top: 2rem;
 }
 
 .repos-item {
+  border: 1px solid #999;
+  margin: 0.5rem;
+  padding: 0.5rem;
+}
+
+.issues-container {
+  display: flex;
+  flex-direction: column;
+  width: 50%;
+  border: 1px solid grey;
+  margin-top: 2rem;
+}
+
+.issues-item {
   border: 1px solid #999;
   margin: 0.5rem;
   padding: 0.5rem;
