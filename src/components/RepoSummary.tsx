@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import { DragDropContext } from "react-beautiful-dnd";
 import { Repo as RepoApiResponse, Issue } from "../APIResponseType";
 import IssuesColumn from "./IssuesColumn";
 import Repo from "./Repo";
@@ -78,6 +79,8 @@ export default function RepoSummary() {
     return currentIssues;
   }
 
+  function handleDragEnd() {}
+
   return (
     <div className="content-container">
       <div className="input-container">
@@ -116,7 +119,11 @@ export default function RepoSummary() {
             <SubTitle>No Repos Found</SubTitle>
           )}
         </Container>
-        {issues.length > 0 && <IssuesColumn issues={issues} />}
+        {issues.length > 0 && (
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <IssuesColumn issues={issues} />
+          </DragDropContext>
+        )}
       </div>
     </div>
   );

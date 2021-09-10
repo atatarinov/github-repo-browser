@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Droppable } from "react-beautiful-dnd";
 import Issue from "./Issue";
 import { Issue as IssueApiResponse } from "../APIResponseType";
 
@@ -25,11 +26,16 @@ export default function IssuesColumn({ issues }: IssuesColumnProps) {
   return (
     <Container>
       <Title>Issues</Title>
-      <IssueList>
-        {issues.map((issue) => (
-          <Issue key={issue.id} issue={issue} />
-        ))}
-      </IssueList>
+      <Droppable droppableId={"issue-column"}>
+        {(provided) => (
+          <IssueList {...provided.droppableProps} ref={provided.innerRef}>
+            {issues.map((issue, index) => (
+              <Issue key={issue.id} issue={issue} index={index} />
+            ))}
+            {provided.placeholder}
+          </IssueList>
+        )}
+      </Droppable>
     </Container>
   );
 }
