@@ -25,7 +25,7 @@ const RepoList = styled.div`
 `;
 
 export default function RepoSummary() {
-  const [apiKey, setApiKey] = useState("");
+  const [apiKey, setApiKey] = useState(sessionStorage.getItem("apiKey"));
   const [repos, setRepos] = useState([] as RepoApiResponse[]);
   const [issues, setIssues] = useState([] as Issue[]);
   const [issueList, setIssueList] = useState([] as Record<number, Issue>);
@@ -44,6 +44,7 @@ export default function RepoSummary() {
         const repos = await reposResponse.json();
 
         setRepos(repos);
+        sessionStorage.setItem("apiKey", apiKey);
         setApiKey("");
       } catch (error) {
         console.error("Error while fetching repos ", error);
@@ -127,10 +128,11 @@ export default function RepoSummary() {
           <label htmlFor="apiKey">Please enter your GitHub API key</label>
           <input
             placeholder="API key"
-            value={apiKey}
+            value={apiKey ? apiKey : ""}
             onChange={(e) => setApiKey(e.target.value)}
+            type="password"
           />
-          <button>Submit</button>
+          <button>Show Repos</button>
         </form>
       </div>
       <div className="repos-summary">
