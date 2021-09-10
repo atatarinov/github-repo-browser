@@ -1,4 +1,4 @@
-import RepositorySummary from "./RepositorySummary";
+import RepoSummary from "./RepoSummary";
 
 export default function App() {
   return (
@@ -6,7 +6,7 @@ export default function App() {
       <header>
         <h2>Welcome to Chegg GitHub Repository and Issue Browser</h2>
       </header>
-      <RepositorySummary />
+      <RepoSummary />
     </div>
   );
 }
