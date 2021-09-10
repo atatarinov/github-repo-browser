@@ -1,6 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { DragDropContext } from "react-beautiful-dnd";
+import { DragDropContext, DropResult } from "react-beautiful-dnd";
 import { Repo as RepoApiResponse, Issue } from "../APIResponseType";
 import IssuesColumn from "./IssuesColumn";
 import Repo from "./Repo";
@@ -28,7 +28,9 @@ export default function RepoSummary() {
   const [apiKey, setApiKey] = useState("");
   const [repos, setRepos] = useState([] as RepoApiResponse[]);
   const [issues, setIssues] = useState([] as Issue[]);
-  // const [issueIds, setIssueIds] = useState([] as number[]);
+  const [issueList, setIssueList] = useState([] as Record<number, Issue>);
+  const [issueIds, setIssueIds] = useState([] as number[]);
+  const [currentRepo, setCurrentRepo] = useState("");
 
   async function requestRepos() {
     if (apiKey) {
@@ -51,17 +53,27 @@ export default function RepoSummary() {
   }
 
   async function requestIssuesForRepo(repoName: string) {
-    try {
-      const response = await fetch(
-        `https://api.github.com/repos/${repoName}/issues`
-      );
-      const issues = await response.json();
+    if (currentRepo !== repoName) {
+      try {
+        const response = await fetch(
+          `https://api.github.com/repos/${repoName}/issues`
+        );
+        const issues = await response.json();
 
-      const currentIssues = createIssueList(issues);
-      setIssues(currentIssues);
-    } catch (error) {
-      console.error("Error while fetching issues ", error);
+        createIssueList(issues);
+        setCurrentRepo(repoName);
+      } catch (error) {
+        console.error("Error while fetching issues ", error);
+      }
     }
+  }
+
+  function updateIssueList(issueIds: number[]) {
+    const updatedIssues = issueIds.map((issueId) => {
+      return issueList[issueId];
+    });
+
+    setIssues(updatedIssues);
   }
 
   function createIssueList(issues: Issue[]) {
@@ -76,10 +88,32 @@ export default function RepoSummary() {
       return issueList[issueId];
     });
 
-    return currentIssues;
+    setIssues(currentIssues);
+    setIssueList(issueList);
+    setIssueIds(issueIds);
   }
 
-  function handleDragEnd() {}
+  function handleDragEnd(result: DropResult) {
+    const { destination, source, draggableId } = result;
+
+    if (!destination) {
+      return;
+    }
+
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return;
+    }
+
+    const newIssueIds = Array.from(issueIds);
+    newIssueIds.splice(source.index, 1);
+    newIssueIds.splice(destination.index, 0, parseInt(draggableId, 10));
+
+    setIssueIds(newIssueIds);
+    updateIssueList(newIssueIds);
+  }
 
   return (
     <div className="content-container">
