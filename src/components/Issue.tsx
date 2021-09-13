@@ -1,5 +1,8 @@
 import styled from "styled-components";
 import { Draggable } from "react-beautiful-dnd";
+import { Github } from "@styled-icons/bootstrap/Github";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { Issue as IssueApiResponse } from "../APIResponseType";
 
 const Container = styled.div`
@@ -12,13 +15,35 @@ const Container = styled.div`
   background-color: white;
 `;
 
-const IssueTitle = styled.div`
+const TitleContent = styled.div`
   display: flex;
   justify-content: space-between;
 `;
-const IssueDates = styled.div`
+
+const Title = styled.p`
+  font-weight: bold;
+  font-size: 13px;
+`;
+
+const DatesContent = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+`;
+
+const LastUpdatedDate = styled.p`
+  margin-top: 5px;
+`;
+
+const AvatarPlaceholderIcon = styled(Github)`
+  height: 40px;
+  margin-right: 5px;
+  color: grey;
+`;
+
+const AvatarIcon = styled.img`
+  height: 40px;
+  height: 40px;
+  border-radius: 50%;
 `;
 
 type IssueProps = {
@@ -27,6 +52,16 @@ type IssueProps = {
 };
 
 export default function Issue({ issue, index }: IssueProps) {
+  const cteatedDate = dayjs(issue.created_at).format("DD/MM/YYYY");
+  dayjs.extend(relativeTime);
+  const lastUpdated = dayjs(issue.updated_at).fromNow();
+
+  const avatar = issue.assignee?.avatar_url ? (
+    <AvatarIcon src={issue.assignee?.avatar_url} />
+  ) : (
+    <AvatarPlaceholderIcon />
+  );
+
   return (
     <Draggable draggableId={issue.id.toString()} index={index}>
       {(provided) => (
@@ -35,19 +70,14 @@ export default function Issue({ issue, index }: IssueProps) {
           {...provided.dragHandleProps}
           ref={provided.innerRef}
         >
-          <IssueTitle>
-            <img
-              src={issue.assignee?.avatar_url}
-              alt="avatar"
-              width="40"
-              height="40"
-            />
-            <p>{issue.title}</p>
-          </IssueTitle>
-          <IssueDates>
-            <p>{issue.created_at}</p>
-            <p>{issue.updated_at}</p>
-          </IssueDates>
+          <TitleContent>
+            <Title>{issue.title}</Title>
+            {avatar}
+          </TitleContent>
+          <DatesContent>
+            <p>Created {cteatedDate}</p>
+            <LastUpdatedDate>Last updated {lastUpdated}</LastUpdatedDate>
+          </DatesContent>
         </Container>
       )}
     </Draggable>
