@@ -13,6 +13,12 @@ const Title = styled.h2`
   color: white;
   margin-top: 30px;
   margin-right: auto;
+  @media (max-width: 760px) {
+    font-size: 20px;
+  }
+  @media (max-width: 600px) {
+    display: none;
+  }
 `;
 
 const GithubIcon = styled(Github)`

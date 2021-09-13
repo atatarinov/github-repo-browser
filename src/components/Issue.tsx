@@ -13,6 +13,9 @@ const Container = styled.div`
   margin-bottom: 1rem;
   border-radius: 6px;
   background-color: white;
+  :hover {
+    background-color: #f5f8fa;
+  }
 `;
 
 const TitleContent = styled.div`
@@ -32,18 +35,39 @@ const DatesContent = styled.div`
 
 const LastUpdatedDate = styled.p`
   margin-top: 5px;
+  @media (max-width: 1100px) {
+    font-size: 10px;
+  }
+  @media (max-width: 600px) {
+    display: none;
+  }
+`;
+
+const CreatedDate = styled.p`
+  @media (max-width: 1100px) {
+    font-size: 10px;
+  }
+  @media (max-width: 600px) {
+    display: none;
+  }
 `;
 
 const AvatarPlaceholderIcon = styled(Github)`
   height: 40px;
   margin-right: 5px;
   color: grey;
+  @media (max-width: 950px) {
+    display: none;
+  }
 `;
 
 const AvatarIcon = styled.img`
   height: 40px;
   height: 40px;
   border-radius: 50%;
+  @media (max-width: 950px) {
+    display: none;
+  }
 `;
 
 type IssueProps = {
@@ -75,7 +99,7 @@ export default function Issue({ issue, index }: IssueProps) {
             {avatar}
           </TitleContent>
           <DatesContent>
-            <p>Created {cteatedDate}</p>
+            <CreatedDate>Created {cteatedDate}</CreatedDate>
             <LastUpdatedDate>Last updated {lastUpdated}</LastUpdatedDate>
           </DatesContent>
         </Container>

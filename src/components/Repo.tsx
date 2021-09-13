@@ -16,12 +16,16 @@ const Container = styled.div`
 `;
 
 const RepoName = styled.div`
+  flex-wrap: wrap;
   font-weight: bold;
   font-size: 15px;
   display: inline-block;
   :hover {
     cursor: pointer;
     color: #166dd7;
+  }
+  @media (max-width: 600px) {
+    font-size: 10px;
   }
 `;
 
@@ -31,12 +35,18 @@ const IssueCount = styled.div`
   font-size: 12px;
   margin-top: 5px;
   margin-top: 16px;
+  @media (max-width: 760px) {
+    display: none;
+  }
 `;
 
 const RepoIcon = styled(GitRepository)`
   height: 18px;
   margin-right: 5px;
   color: grey;
+  @media (max-width: 760px) {
+    display: none;
+  }
 `;
 
 type RepoProps = {

@@ -34,6 +34,12 @@ const RepoContainer = styled.div`
   width: 50%;
   margin: 2rem;
   justify-content: center;
+  @media (max-width: 760px) {
+    width: 40%;
+  }
+  @media (max-width: 600px) {
+    width: 40%;
+  }
 `;
 
 const IssueContainer = styled.div`
@@ -45,6 +51,9 @@ const IssueContainer = styled.div`
 
 const SubTitle = styled.h5`
   padding: 8px;
+  @media (max-width: 600px) {
+    padding: 0;
+  }
 `;
 
 const RepoList = styled.div`
@@ -74,6 +83,9 @@ const Input = styled.input`
   border-radius: 5px;
   width: 80%;
   margin-left: 15px;
+  @media (max-width: 760px) {
+    width: 60%;
+  }
 `;
 
 const Button = styled.button`
@@ -83,7 +95,15 @@ const Button = styled.button`
   border: 1px solid lightgrey;
   font-size: 16px;
   margin-left: 1rem;
+  margin-right: 1rem;
   width: 8rem;
+  @media (max-width: 760px) {
+    width: 30%;
+    font-size: 12px;
+  }
+  @media (max-width: 600px) {
+    font-size: 10px;
+  }
 `;
 
 export default function RepoSummary() {
