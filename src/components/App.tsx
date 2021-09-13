@@ -1,11 +1,19 @@
+import { createGlobalStyle } from "styled-components";
 import RepoSummary from "./RepoSummary";
+import Header from "./Header";
+
+const GlobalStyle = createGlobalStyle`
+  body {
+    background-color: #f5f8fa;
+    margin: 0;
+  }
+`;
 
 export default function App() {
   return (
     <div>
-      <header>
-        <h2>Welcome to Chegg GitHub Repository and Issue Browser</h2>
-      </header>
+      <GlobalStyle />
+      <Header />
       <RepoSummary />
     </div>
   );

@@ -6,14 +6,41 @@ import IssuesColumn from "./IssuesColumn";
 import Repo from "./Repo";
 
 const Container = styled.div`
-  width: 50%;
-  margin: 8px;
-  border: 1px solid lightgrey;
-  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  background-color: #f5f8fa;
+  justify-content: center;
 `;
 
-const Title = styled.h3`
-  padding: 8px;
+const ContentContainer = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const FormContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f8fa;
+  width: 55%;
+  height: 7rem;
+  margin: 3rem auto;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  box-shadow: 0px 0px 2px lightgray;
+`;
+
+const RepoContainer = styled.div`
+  width: 50%;
+  margin: 2rem;
+  justify-content: center;
+`;
+
+const IssueContainer = styled.div`
+  display: flex;
+  width: 20%;
+  margin: 2rem;
+  justify-content: center;
 `;
 
 const SubTitle = styled.h5`
@@ -21,7 +48,42 @@ const SubTitle = styled.h5`
 `;
 
 const RepoList = styled.div`
-  padding: 8px;
+  padding: 1rem;
+`;
+
+const FormLabel = styled.h6`
+  color: #57606a;
+  margin-left: 15px;
+  padding-top: 23px;
+`;
+
+const Form = styled.form`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`;
+
+const FormSubmit = styled.div`
+  display: flex;
+`;
+
+const Input = styled.input`
+  height: 1.5rem;
+  background-color: #f5f8fa;
+  border: 1px solid lightgrey;
+  border-radius: 5px;
+  width: 80%;
+  margin-left: 15px;
+`;
+
+const Button = styled.button`
+  color: white;
+  background-color: #2ba44e;
+  border-radius: 5px;
+  border: 1px solid lightgrey;
+  font-size: 16px;
+  margin-left: 1rem;
+  width: 8rem;
 `;
 
 export default function RepoSummary() {
@@ -31,6 +93,8 @@ export default function RepoSummary() {
   const [issueList, setIssueList] = useState([] as Record<number, Issue>);
   const [issueIds, setIssueIds] = useState([] as number[]);
   const [currentRepo, setCurrentRepo] = useState("");
+  const [repoNotice, setRepoNotice] = useState("");
+  const [showLoginForm, setShowLoginForm] = useState(true);
 
   async function requestRepos() {
     if (apiKey) {
@@ -46,9 +110,11 @@ export default function RepoSummary() {
         setRepos(repos);
         sessionStorage.setItem("apiKey", apiKey);
         setApiKey("");
+        setShowLoginForm(false);
       } catch (error) {
         console.error("Error while fetching repos ", error);
         setApiKey("");
+        setRepoNotice("No Repos Found For This Key");
       }
     }
   }
@@ -70,11 +136,11 @@ export default function RepoSummary() {
   }
 
   function updateIssueList(issueIds: number[]) {
-    const updatedIssues = issueIds.map((issueId) => {
+    const newIssueOrder = issueIds.map((issueId) => {
       return issueList[issueId];
     });
 
-    setIssues(updatedIssues);
+    setIssues(newIssueOrder);
   }
 
   function createIssueList(issues: Issue[]) {
@@ -112,32 +178,45 @@ export default function RepoSummary() {
     newIssueIds.splice(source.index, 1);
     newIssueIds.splice(destination.index, 0, parseInt(draggableId, 10));
 
+    sessionStorage.setItem(currentRepo, JSON.stringify(issueIds));
+    // var storedNames = JSON.parse(localStorage.getItem("names"));
     setIssueIds(newIssueIds);
     updateIssueList(newIssueIds);
   }
 
+  function handleFormChange() {
+    if (repoNotice !== "") {
+      setRepoNotice("");
+    }
+  }
+
   return (
-    <div className="content-container">
-      <div className="input-container">
-        <form
-          onSubmit={(e) => {
-            e.preventDefault();
-            requestRepos();
-          }}
-        >
-          <label htmlFor="apiKey">Please enter your GitHub API key</label>
-          <input
-            placeholder="API key"
-            value={apiKey ? apiKey : ""}
-            onChange={(e) => setApiKey(e.target.value)}
-            type="password"
-          />
-          <button>Show Repos</button>
-        </form>
-      </div>
-      <div className="repos-summary">
-        <Container>
-          <Title>Repos</Title>
+    <Container>
+      {showLoginForm && (
+        <FormContainer>
+          <Form
+            onSubmit={(e) => {
+              e.preventDefault();
+              requestRepos();
+            }}
+            onChange={handleFormChange}
+          >
+            <FormLabel>Please enter your GitHub API key </FormLabel>
+            <FormSubmit>
+              <Input
+                placeholder="Type the key..."
+                value={apiKey ? apiKey : ""}
+                onChange={(e) => setApiKey(e.target.value)}
+                type="password"
+              />
+              <Button>Show Repos</Button>
+            </FormSubmit>
+          </Form>
+        </FormContainer>
+      )}
+      <ContentContainer>
+        <RepoContainer>
+          {/* <Title>Repos</Title> */}
           {repos.length ? (
             <RepoList>
               {repos.map((repo) => {
@@ -146,21 +225,23 @@ export default function RepoSummary() {
                     key={repo.id}
                     onClick={(_) => requestIssuesForRepo(repo.full_name)}
                   >
-                    <Repo name={repo.name} />
+                    <Repo name={repo.name} issueCount={repo.open_issues} />
                   </div>
                 );
               })}
             </RepoList>
           ) : (
-            <SubTitle>No Repos Found</SubTitle>
+            <SubTitle>{repoNotice}</SubTitle>
           )}
-        </Container>
+        </RepoContainer>
         {issues.length > 0 && (
-          <DragDropContext onDragEnd={handleDragEnd}>
-            <IssuesColumn issues={issues} />
-          </DragDropContext>
+          <IssueContainer>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <IssuesColumn issues={issues} />
+            </DragDropContext>
+          </IssueContainer>
         )}
-      </div>
-    </div>
+      </ContentContainer>
+    </Container>
   );
 }

@@ -2,6 +2,7 @@ export interface Repo {
   id: number;
   name: string;
   full_name: string;
+  open_issues: number;
 }
 
 export interface Issue {
