@@ -127,7 +127,7 @@ export default function RepoSummary() {
         );
         const issues = await response.json();
 
-        createIssueList(issues);
+        createIssueList(issues, repoName);
         setCurrentRepo(repoName);
       } catch (error) {
         console.error("Error while fetching issues ", error);
@@ -143,21 +143,40 @@ export default function RepoSummary() {
     setIssues(newIssueOrder);
   }
 
-  function createIssueList(issues: Issue[]) {
+  function createIssueList(issues: Issue[], repoName: string) {
     const issueList: Record<number, Issue> = {};
+
+    const existingIssuesIds = sessionStorage.getItem(repoName);
+    const parsedIssuesIds = existingIssuesIds
+      ? JSON.parse(existingIssuesIds)
+      : null;
 
     const issueIds = issues.map((issue) => {
       issueList[issue.id] = issue;
       return issue.id;
     });
 
-    const currentIssues = issueIds.map((issueId) => {
-      return issueList[issueId];
-    });
+    let currentIssues;
+
+    if (parsedIssuesIds && parsedIssuesIds.length === issues.length) {
+      currentIssues = parsedIssuesIds.map((issueId: number) => {
+        return issueList[issueId];
+      });
+
+      setIssueIds(parsedIssuesIds);
+    } else {
+      currentIssues = issueIds.map((issueId: number) => {
+        return issueList[issueId];
+      });
+
+      if (issueIds.length > 0) {
+        sessionStorage.setItem(repoName, JSON.stringify(issueIds));
+      }
+      setIssueIds(issueIds);
+    }
 
     setIssues(currentIssues);
     setIssueList(issueList);
-    setIssueIds(issueIds);
   }
 
   function handleDragEnd(result: DropResult) {
@@ -178,8 +197,7 @@ export default function RepoSummary() {
     newIssueIds.splice(source.index, 1);
     newIssueIds.splice(destination.index, 0, parseInt(draggableId, 10));
 
-    sessionStorage.setItem(currentRepo, JSON.stringify(issueIds));
-    // var storedNames = JSON.parse(localStorage.getItem("names"));
+    sessionStorage.setItem(currentRepo, JSON.stringify(newIssueIds));
     setIssueIds(newIssueIds);
     updateIssueList(newIssueIds);
   }
@@ -216,7 +234,6 @@ export default function RepoSummary() {
       )}
       <ContentContainer>
         <RepoContainer>
-          {/* <Title>Repos</Title> */}
           {repos.length ? (
             <RepoList>
               {repos.map((repo) => {
