@@ -49,7 +49,7 @@ const IssueContainer = styled.div`
   justify-content: center;
 `;
 
-const SubTitle = styled.h5`
+const UserNotice = styled.h4`
   padding: 8px;
   @media (max-width: 600px) {
     padding: 0;
@@ -117,24 +117,55 @@ export default function RepoSummary() {
   const [showLoginForm, setShowLoginForm] = useState(true);
 
   async function requestRepos() {
+    const NO_REPOS_RESPONSE = "No Repos Found For This Key";
+    let userInfo;
+
     if (apiKey) {
       try {
         const response = await fetch("https://api.github.com/user", {
           headers: { Authorization: `bearer ${apiKey}` },
         });
 
-        const userInfo = await response.json();
+        if (response.status !== 200) {
+          setApiKey("");
+          setRepoNotice("Invalid API Key");
+          return;
+        }
+
+        userInfo = await response.json();
+        sessionStorage.setItem("apiKey", apiKey);
+      } catch (error) {
+        console.error("Error while validating user ", error);
+        setApiKey("");
+        setRepoNotice("Invalid API Key");
+        return;
+      }
+    }
+
+    if (userInfo) {
+      try {
         const reposResponse = await fetch(userInfo.repos_url);
+
+        if (reposResponse.status !== 200) {
+          setApiKey("");
+          setRepoNotice(NO_REPOS_RESPONSE);
+          return;
+        }
+
         const repos = await reposResponse.json();
 
         setRepos(repos);
-        sessionStorage.setItem("apiKey", apiKey);
         setApiKey("");
         setShowLoginForm(false);
+
+        if (repos.length === 0) {
+          setRepoNotice(NO_REPOS_RESPONSE);
+        }
       } catch (error) {
         console.error("Error while fetching repos ", error);
         setApiKey("");
-        setRepoNotice("No Repos Found For This Key");
+        setRepoNotice(NO_REPOS_RESPONSE);
+        return;
       }
     }
   }
@@ -268,7 +299,7 @@ export default function RepoSummary() {
               })}
             </RepoList>
           ) : (
-            <SubTitle>{repoNotice}</SubTitle>
+            <UserNotice>{repoNotice}</UserNotice>
           )}
         </RepoContainer>
         {issues.length > 0 && (

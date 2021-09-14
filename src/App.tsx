@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
-import RepoSummary from "./RepoSummary";
-import Header from "./Header";
+import RepoSummary from "./components/RepoSummary";
+import Header from "./components/Header";
 
 const GlobalStyle = createGlobalStyle`
   body {
