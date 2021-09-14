@@ -35,6 +35,7 @@
 
 ## Technical decisions
 
+- All technical decisions were based on the available GitHub API and my own GitHub repos
 - The styles were built using Styled Components
 - Media queries were added at crucial breakpoints to service different screen sizes
 - An alert message was utilized to alert the user on the user actions, such as invalid API key input and possible network issues
