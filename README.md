@@ -1,46 +1,51 @@
-# Getting Started with Create React App
+# GitHub Repo And Issue Browser
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Setup
 
-## Available Scripts
+### Initial setup
 
-In the project directory, you can run:
+- Install Node and NPM
+  - Mac
+    - Install [Homebrew](https://docs.brew.sh/Installation)
+    - Run `brew install node`
+  - Windows
+    - Download and run the [Node Windows installer](https://nodejs.org/dist/v14.15.3/node-v14.15.3-x86.msi)
+  - Linux
+    - See [instructions](https://nodejs.org/en/download/package-manager/) for your distribution's package manager
+- Install Yarn
+  - Run `npm install -g yarn`
 
-### `yarn start`
+### App setup
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+- Run `yarn` to install dependencies
+- Run `yarn dev` to run the app locally in the development mode on `http://localhost:3000`
+- Run `yarn test` to run the test suites. If necessary, press 'a' to run all the tests
+- Run `yarn test:coverage` to run the coverage report
+- (optional) Run `yarn build` to build a production bundle if needed
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## User flow
 
-### `yarn test`
+- User lands on the repo summary page that first displays the login form for the Github API key
+- Once a valid API key is entered, it gets stored in the session storage. The next time the app is loaded, the login input field will be pre-filled with the API key that will be masked for security
+- Once the user gets authenticated, the login form gets hidden and the user is shown all available repos in a single column layout. Each repo card shows repo name and a number of issues for convenience
+- User clicks on each repo and, if available, a column of issues is displayed
+- User is able to rearrange the issues in the desired order by dragging and dropping the issues in the issues column
+- Each issue features the assignee avatar (or a placeholder default avatar if no assignee), title, created date, and the last updated time
+- User has the option to click on other issues and reload the page. The order of the issues will be preserved in the session storage
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Technical decisions
 
-### `yarn build`
+- The styles were built using Styled Components
+- Media queries were added at crucial breakpoints to service different screen sizes
+- An alert message was utilized to alert the user on the user actions, such as invalid API key input and possible network issues
+- Running locally, the App scored above 94 in Lighthouse for accessibility and best practices
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Further improvements
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+- Further improve user experience by bypassing the login form after authentication and showing the repo list
+- Add an option to search the repos based on name
+- Add the ability to rearrange the repos in the desired order
+- Add functionality to sync the customized issue and repo order with the API
+- Further improve the transition from a one column to a two column layout
+- Add a caching mechanism to limit the number of network calls
+- Integrate the app with analytics and logging platforms

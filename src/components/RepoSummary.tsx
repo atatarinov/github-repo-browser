@@ -117,7 +117,7 @@ export default function RepoSummary() {
   const [showLoginForm, setShowLoginForm] = useState(true);
 
   async function requestRepos() {
-    const NO_REPOS_RESPONSE = "No Repos Found For This Key";
+    const NO_REPOS_ALERT = "No Repos Found For This Key";
     let userInfo;
 
     if (apiKey) {
@@ -148,7 +148,7 @@ export default function RepoSummary() {
 
         if (reposResponse.status !== 200) {
           setApiKey("");
-          setRepoNotice(NO_REPOS_RESPONSE);
+          setRepoNotice(NO_REPOS_ALERT);
           return;
         }
 
@@ -159,12 +159,12 @@ export default function RepoSummary() {
         setShowLoginForm(false);
 
         if (repos.length === 0) {
-          setRepoNotice(NO_REPOS_RESPONSE);
+          setRepoNotice(NO_REPOS_ALERT);
         }
       } catch (error) {
         console.error("Error while fetching repos ", error);
         setApiKey("");
-        setRepoNotice(NO_REPOS_RESPONSE);
+        setRepoNotice(NO_REPOS_ALERT);
         return;
       }
     }
